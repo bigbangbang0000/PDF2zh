@@ -164,18 +164,21 @@ class PDFTranslator:
             print("-" * 60)
             
             try:
-                # 構建 pdf2zh 命令
-                pdf2zh_dir = Path(__file__).resolve().parent.parent
-                # 優先使用內建的 pdf2zh.exe
-                pdf2zh_exe = pdf2zh_dir / "pdf2zh" / "build" / "pdf2zh.exe"
+                # 腳本所在目錄即為專案根目錄
+                script_dir = Path(__file__).resolve().parent
+                # 優先使用內建的 pdf2zh.exe（位於 build/ 子目錄）
+                pdf2zh_exe = script_dir / "build" / "pdf2zh.exe"
                 
                 # 決定語言代碼
                 lang_code = "zh-tw" if traditional else language
+
+                # 使用絕對路徑，確保輸出目錄位置正確
+                output_dir_abs = str(self.output_dir.absolute())
                 
                 if pdf2zh_exe.exists():
                     cmd = [
                         str(pdf2zh_exe),
-                        "--output", str(self.output_dir),
+                        "--output", output_dir_abs,
                         "--service", engine,
                         "--lang-out", lang_code
                     ]
@@ -184,14 +187,10 @@ class PDFTranslator:
                     cmd = [
                         sys.executable,
                         "-m", "pdf2zh",
-                        "--output", str(self.output_dir),
+                        "--output", output_dir_abs,
                         "--service", engine,
                         "--lang-out", lang_code
                     ]
-                
-                # 添加 API Key（如果有）
-                if api_key:
-                    cmd.extend(["-k", api_key])
                 
                 # 最後添加待翻譯檔案
                 cmd.append(str(pdf_file.resolve()))
@@ -199,15 +198,15 @@ class PDFTranslator:
                 env = os.environ.copy()
                 env["PYTHONIOENCODING"] = "utf-8"
                 # 確保包含 site-packages 以載入內建相依套件
-                site_packages = pdf2zh_dir / "pdf2zh" / "build" / "site-packages"
-                env["PYTHONPATH"] = f"{pdf2zh_dir}{os.pathsep}{site_packages}{os.pathsep}{os.environ.get('PYTHONPATH', '')}"
+                site_packages = script_dir / "build" / "site-packages"
+                env["PYTHONPATH"] = f"{script_dir.parent}{os.pathsep}{site_packages}{os.pathsep}{os.environ.get('PYTHONPATH', '')}"
                 
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
                     encoding="utf-8",
                     timeout=600,
-                    cwd=str(pdf2zh_dir),
+                    cwd=str(script_dir),
                     env=env
                 )
                 
