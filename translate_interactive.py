@@ -4,6 +4,9 @@
 掃描 input 資料夾，讓用戶選擇要翻譯的 PDF 檔案
 """
 
+import sys, os
+# 強制使用 UTF-8 編碼，避免 Windows cp950 造成 UnicodeDecodeError
+sys.stdout.reconfigure(encoding='utf-8')
 import os
 import sys
 import subprocess
@@ -37,7 +40,7 @@ class PDFTranslator:
     def display_menu(self):
         """顯示主菜單"""
         print("\n" + "=" * 60)
-        print("  📄 PDF 翻譯工具 (PDF2zh Interactive Translator)")
+        print("  PDF 翻譯工具 (PDF2zh Interactive Translator)")
         print("=" * 60)
     
     def display_files(self, pdf_files: List[Path]):
@@ -162,30 +165,50 @@ class PDFTranslator:
             
             try:
                 # 構建 pdf2zh 命令
-                pdf2zh_script = self._script_path("pdf2zh.py")
-                cmd = [
-                    sys.executable,
-                    str(pdf2zh_script),
-                    str(pdf_file.resolve()),
-                    "-o", str(self.output_dir),
-                    "-e", engine,
-                    "-l", language
-                ]
+                pdf2zh_dir = Path(__file__).resolve().parent.parent
+                # 優先使用內建的 pdf2zh.exe
+                pdf2zh_exe = pdf2zh_dir / "pdf2zh" / "build" / "pdf2zh.exe"
                 
-                # 添加繁體中文選項
-                if traditional:
-                    cmd.append("--zh-traditional")
+                # 決定語言代碼
+                lang_code = "zh-tw" if traditional else language
+                
+                if pdf2zh_exe.exists():
+                    cmd = [
+                        str(pdf2zh_exe),
+                        "--output", str(self.output_dir),
+                        "--service", engine,
+                        "--lang-out", lang_code
+                    ]
+                else:
+                    # 退回使用 python -m 模式
+                    cmd = [
+                        sys.executable,
+                        "-m", "pdf2zh",
+                        "--output", str(self.output_dir),
+                        "--service", engine,
+                        "--lang-out", lang_code
+                    ]
                 
                 # 添加 API Key（如果有）
                 if api_key:
                     cmd.extend(["-k", api_key])
                 
-                # 執行翻譯
+                # 最後添加待翻譯檔案
+                cmd.append(str(pdf_file.resolve()))
+                
+                env = os.environ.copy()
+                env["PYTHONIOENCODING"] = "utf-8"
+                # 確保包含 site-packages 以載入內建相依套件
+                site_packages = pdf2zh_dir / "pdf2zh" / "build" / "site-packages"
+                env["PYTHONPATH"] = f"{pdf2zh_dir}{os.pathsep}{site_packages}{os.pathsep}{os.environ.get('PYTHONPATH', '')}"
+                
                 result = subprocess.run(
                     cmd,
                     capture_output=True,
-                    text=True,
-                    timeout=600  # 10 分鐘超時
+                    encoding="utf-8",
+                    timeout=600,
+                    cwd=str(pdf2zh_dir),
+                    env=env
                 )
                 
                 if result.returncode == 0:

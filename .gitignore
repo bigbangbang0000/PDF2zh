@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+output/
+input/
+.env
+.antigravityignore
+build/site-packages/
