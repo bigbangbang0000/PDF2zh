@@ -58,7 +58,60 @@ pip install -e .
 
 ### 2. 本地使用
 
-#### 基本用法：
+#### 🌟 **推薦方式：互動式翻譯工具**
+
+最簡單的方式！工具會自動掃描 `input/` 資料夾，讓你選擇要翻譯的 PDF：
+
+```bash
+python translate_interactive.py
+```
+
+**功能**：
+- ✅ 自動掃描 input/ 資料夾中的所有 PDF
+- ✅ 互動式選擇要翻譯的檔案（單個或批量）
+- ✅ 選擇翻譯引擎和語言選項
+- ✅ 實時進度顯示
+- ✅ 翻譯完成後可選生成索引頁面
+
+**使用流程示例**：
+```
+=== 互動式翻譯工具 ===
+
+✅ 在 input 資料夾中找到 3 個 PDF 檔案：
+
+  1. research_paper.pdf           (15.50 MB)
+  2. thesis_draft.pdf             (12.80 MB)  
+  3. technical_doc.pdf            ( 5.30 MB)
+
+選擇翻譯引擎 (1-5) [預設: 1]: 1
+✅ 已選擇: Google 翻譯（免費，推薦）
+
+選擇語言選項 (1-2) [預設: 1]: 1
+✅ 已選擇: 簡體中文
+
+輸入要翻譯的檔案編號 [預設: a(全選)]: 1,3
+✅ 已選擇 2 個檔案:
+   - research_paper.pdf
+   - technical_doc.pdf
+
+確認開始翻譯？(y/n) [預設: y]: y
+
+[1/2] 正在翻譯: research_paper.pdf
+✅ 翻譯成功！
+
+[2/2] 正在翻譯: technical_doc.pdf
+✅ 翻譯成功！
+
+=== 翻譯結果 ===
+✅ 成功翻譯 2 個檔案
+📁 翻譯結果已保存到: /home/user/PDF2zh/output
+```
+
+---
+
+#### 基本用法（命令行）：
+
+如果你偏好直接使用命令行，可用以下方式：
 
 ```bash
 # 使用 Google 翻譯（免費，推薦）
@@ -94,6 +147,22 @@ Options:
 | **openai** | 最先進的翻譯 | 需要付費，較慢 | ✅ 是 |
 
 #### 使用範例：
+
+##### 1️⃣ 互動式工具（推薦）
+
+```bash
+# 啟動互動式翻譯工具
+python translate_interactive.py
+
+# 工具會自動：
+# 1. 掃描 input/ 資料夾
+# 2. 列出所有 PDF 檔案
+# 3. 讓你選擇要翻譯的檔案（支援多選）
+# 4. 讓你選擇翻譯引擎
+# 5. 執行翻譯並顯示進度
+```
+
+##### 2️⃣ 命令行方式
 
 ```bash
 # 使用 Google 翻譯，輸出到指定目錄
@@ -205,6 +274,7 @@ PDF2zh/
 │   └── index.html                   # 自動生成的索引頁面
 ├── src/                             # pdf2zh 源代碼
 ├── generate_index.py                # 索引頁面生成腳本
+├── translate_interactive.py         # 互動式翻譯工具（推薦）⭐
 ├── README.md                        # 本檔案
 ├── WORKFLOW_README.md               # 工作流詳細說明
 ├── setup.py                         # Python 包配置
@@ -264,6 +334,65 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 
 ## 🐛 故障排查
 
+### 互動式翻譯工具常見問題
+
+#### 問題 1: "找不到 pdf2zh 命令"
+
+**症狀**: 運行 `python translate_interactive.py` 時出現錯誤
+
+**解決方案**:
+1. 確認已安裝 pdf2zh：
+   ```bash
+   pip install pdf2zh
+   ```
+2. 驗證安裝：
+   ```bash
+   pdf2zh --version
+   ```
+3. 如果仍無法找到，嘗試重新安裝：
+   ```bash
+   pip uninstall pdf2zh -y
+   pip install pdf2zh
+   ```
+
+#### 問題 2: "找不到 input 資料夾"
+
+**症狀**: 工具提示 "input 資料夾中沒有找到任何 PDF 檔案"
+
+**解決方案**:
+1. 確認 `input/` 資料夾存在：
+   ```bash
+   mkdir -p input/
+   ```
+2. 檢查 PDF 檔案是否確實在 input 資料夾中：
+   ```bash
+   ls -la input/
+   ```
+3. 確保檔案副檔名為 `.pdf`（小寫）
+
+#### 問題 3: 翻譯失敗，顯示權限錯誤
+
+**症狀**: "Permission denied" 或類似錯誤
+
+**解決方案**:
+1. 確認 output 資料夾可寫：
+   ```bash
+   chmod 755 output/
+   ```
+2. 確認磁碟空間足夠
+3. 檢查是否有反病毒軟件擋住了進程
+
+#### 問題 4: Google 翻譯服務不可用
+
+**症狀**: 所有使用 Google 引擎的翻譯都失敗
+
+**解決方案**:
+1. 檢查網路連接
+2. 嘗試使用其他翻譯引擎（DeepL、Azure 等）
+3. 等待一段時間後重試（Google 服務可能暫時不可用）
+
+---
+
 ### 問題 1: 工作流執行失敗
 
 **症狀**: Actions 標籤顯示紅色 ❌
@@ -319,6 +448,48 @@ pdf2zh --version
 ---
 
 ## 💡 高級用法
+
+### 互動式翻譯工具的進階功能
+
+#### 1. 批量翻譯多個 PDF
+
+```bash
+python translate_interactive.py
+
+# 在檔案選擇步驟輸入：a
+# （或輸入多個編號：1,2,3）
+# 將一次性翻譯所有選定的檔案
+```
+
+#### 2. 使用付費翻譯引擎
+
+```bash
+python translate_interactive.py
+
+# 選擇引擎時選擇 DeepL、Azure 等
+# 當提示時輸入你的 API Key
+# 工具會自動應用到所有翻譯任務
+```
+
+#### 3. 輸出繁體中文
+
+```bash
+python translate_interactive.py
+
+# 在語言選項步驟選擇 2（繁體中文）
+# 所有翻譯結果都會是繁體中文
+```
+
+#### 4. 與索引頁面集成
+
+```bash
+python translate_interactive.py
+
+# 翻譯完成後，工具會提示是否生成索引頁面
+# 選擇 y，自動生成 GitHub Pages 兼容的 index.html
+```
+
+---
 
 ### 批量翻譯本地檔案
 
