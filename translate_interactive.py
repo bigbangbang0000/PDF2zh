@@ -13,6 +13,10 @@ from typing import List, Optional
 
 class PDFTranslator:
     """互動式 PDF 翻譯管理類"""
+
+    def _script_path(self, script_name: str) -> Path:
+        """取得與目前腳本同目錄的輔助腳本絕對路徑。"""
+        return Path(__file__).resolve().with_name(script_name)
     
     def __init__(self, input_dir: str = "input", output_dir: str = "output"):
         """初始化翻譯器"""
@@ -158,9 +162,11 @@ class PDFTranslator:
             
             try:
                 # 構建 pdf2zh 命令
+                pdf2zh_script = self._script_path("pdf2zh.py")
                 cmd = [
-                    "pdf2zh",
-                    str(pdf_file),
+                    sys.executable,
+                    str(pdf2zh_script),
+                    str(pdf_file.resolve()),
                     "-o", str(self.output_dir),
                     "-e", engine,
                     "-l", language
@@ -277,7 +283,8 @@ class PDFTranslator:
                 gen_index = input("是否生成 GitHub Pages 索引頁面？(y/n) [預設: y]: ").strip().lower() or "y"
                 if gen_index == "y":
                     try:
-                        subprocess.run(["python", "generate_index.py"], check=True)
+                        generate_index_script = self._script_path("generate_index.py")
+                        subprocess.run([sys.executable, str(generate_index_script)], check=True)
                         print("✅ 索引頁面已生成！")
                     except Exception as e:
                         print(f"⚠️  生成索引頁面失敗: {e}")
