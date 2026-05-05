@@ -60,9 +60,36 @@ pip install -e .
 
 #### 🌟 **推薦方式：互動式翻譯工具**
 
-最簡單的方式！工具會自動掃描 `input/` 資料夾，讓你選擇要翻譯的 PDF：
+最簡單的方式！工具會自動掃描 `input/` 資料夾，讓你選擇要翻譯的 PDF。
 
+**三種運行方式**（選擇其中一種）：
+
+##### 方式 1️⃣：Windows 用戶（推薦）
+直接雙擊運行：
+```
+translate.bat
+```
+或在命令行運行：
 ```bash
+translate.bat
+```
+
+##### 方式 2️⃣：Linux / macOS 用戶
+```bash
+bash translate.sh
+# 或
+./translate.sh
+```
+
+##### 方式 3️⃣：所有系統（通用方式）
+在項目根目錄運行：
+```bash
+python translate.py
+```
+
+或進入 `pdf2zh` 目錄運行：
+```bash
+cd pdf2zh
 python translate_interactive.py
 ```
 
@@ -264,21 +291,27 @@ https://jimmymochi.github.io/PDF2zh/
 
 ```
 PDF2zh/
-├── .github/
-│   └── workflows/
-│       └── translate_pdf.yml        # GitHub Actions 工作流配置
-├── input/                           # 上傳待翻譯 PDF 的資料夾
-│   └── .gitkeep
-├── output/                          # 翻譯結果和索引頁面存放處
-│   ├── .gitkeep
-│   └── index.html                   # 自動生成的索引頁面
-├── src/                             # pdf2zh 源代碼
-├── generate_index.py                # 索引頁面生成腳本
-├── translate_interactive.py         # 互動式翻譯工具（推薦）⭐
-├── README.md                        # 本檔案
-├── WORKFLOW_README.md               # 工作流詳細說明
-├── setup.py                         # Python 包配置
-└── requirements.txt                 # 依賴列表
+├── translate.py                     # 互動式翻譯工具啟動器（推薦）⭐
+├── translate.bat                    # Windows 啟動腳本
+├── translate.sh                     # Linux/macOS 啟動腳本
+│
+├── pdf2zh/                          # PDF2zh 主程序目錄
+│   ├── .github/
+│   │   └── workflows/
+│   │       └── translate_pdf.yml    # GitHub Actions 工作流配置
+│   ├── input/                       # 📥 上傳待翻譯 PDF 的資料夾
+│   │   └── .gitkeep
+│   ├── output/                      # 📤 翻譯結果存放處
+│   │   ├── .gitkeep
+│   │   └── index.html               # 自動生成的索引頁面
+│   ├── generate_index.py            # 索引頁面生成腳本
+│   ├── translate_interactive.py     # 互動式翻譯工具核心
+│   ├── README.md                    # 本檔案
+│   ├── WORKFLOW_README.md           # 工作流詳細說明
+│   ├── setup.py                     # Python 包配置
+│   └── requirements.txt             # 依賴列表
+│
+└── .qodo/                           # 其他配置
 ```
 
 ---
@@ -336,9 +369,43 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 
 ### 互動式翻譯工具常見問題
 
+#### 問題 0: "找不到腳本文件" 或 "No such file or directory"
+
+**症狀**: 運行 `python translate_interactive.py` 時出現找不到文件的錯誤
+
+**解決方案**:
+確保你在正確的目錄中運行：
+
+✅ **正確方式 - 在項目根目錄運行**（推薦）：
+```bash
+# Windows - 雙擊 translate.bat 或運行
+translate.bat
+
+# Linux/macOS
+bash translate.sh
+
+# 或使用 Python
+python translate.py
+```
+
+❌ **不正確的方式**（會出現錯誤）：
+```bash
+# ❌ 錯誤：直接運行 translate_interactive.py
+python translate_interactive.py
+
+# ❌ 錯誤：在 pdf2zh 目錄外運行
+python pdf2zh/translate_interactive.py
+```
+
+✅ **替代方案 - 進入 pdf2zh 目錄**：
+```bash
+cd pdf2zh
+python translate_interactive.py
+```
+
 #### 問題 1: "找不到 pdf2zh 命令"
 
-**症狀**: 運行 `python translate_interactive.py` 時出現錯誤
+**症狀**: 運行翻譯工具時出現錯誤
 
 **解決方案**:
 1. 確認已安裝 pdf2zh：
@@ -360,13 +427,13 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 **症狀**: 工具提示 "input 資料夾中沒有找到任何 PDF 檔案"
 
 **解決方案**:
-1. 確認 `input/` 資料夾存在：
+1. 確認 `input/` 資料夾存在，且位置在 `pdf2zh/input/`：
    ```bash
-   mkdir -p input/
+   mkdir -p pdf2zh/input/
    ```
 2. 檢查 PDF 檔案是否確實在 input 資料夾中：
    ```bash
-   ls -la input/
+   ls -la pdf2zh/input/
    ```
 3. 確保檔案副檔名為 `.pdf`（小寫）
 
@@ -377,7 +444,7 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 **解決方案**:
 1. 確認 output 資料夾可寫：
    ```bash
-   chmod 755 output/
+   chmod 755 pdf2zh/output/
    ```
 2. 確認磁碟空間足夠
 3. 檢查是否有反病毒軟件擋住了進程
@@ -393,7 +460,7 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 
 ---
 
-### 問題 1: 工作流執行失敗
+#### 問題 5: GitHub Actions 工作流執行失敗
 
 **症狀**: Actions 標籤顯示紅色 ❌
 
@@ -405,7 +472,7 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
    - 網路連接問題
    - Google 翻譯服務臨時不可用
 
-### 問題 2: GitHub Pages 頁面未更新
+#### 問題 6: GitHub Pages 頁面未更新
 
 **症狀**: https://jimmymochi.github.io/PDF2zh/ 未顯示最新檔案
 
@@ -419,7 +486,7 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
    - Branch: `gh-pages`, `/root` 目錄
 3. 清除瀏覽器快取：`Ctrl+Shift+Del` (Windows) 或 `Cmd+Shift+Del` (Mac)
 
-### 問題 3: 翻譯質量差
+#### 問題 7: 翻譯質量差
 
 **症狀**: PDF 翻譯結果不準確或遺漏內容
 
@@ -428,13 +495,13 @@ pdf2zh "$pdf_file" -o output/ -e google --zh-traditional
 2. 確保 PDF 是文本型而非圖像型
 3. 檢查 PDF 是否有密碼保護
 
-### 問題 4: 本地運行出錯
+#### 問題 8: GitHub Actions 中 pdf2zh 命令未找到
 
-**症狀**: `pdf2zh` 命令未找到或版本錯誤
+**症狀**: 工作流日誌顯示 "pdf2zh: command not found"
 
 **解決方案**:
 ```bash
-# 驗證 Python 版本
+# 在 .github/workflows/translate_pdf.yml 中驗證 Python 版本
 python --version  # 應為 3.10+
 
 # 重新安裝 pdf2zh
