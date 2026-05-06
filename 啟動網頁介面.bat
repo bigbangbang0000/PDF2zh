@@ -8,20 +8,16 @@ echo ========================================================
 echo          PDF2zh 本地網頁翻譯介面
 echo ========================================================
 echo.
-echo [啟動中] 正在啟動翻譯介面，請稍候...
-echo 啟動完成後，請在瀏覽器中開啟以下網址：
+echo [啟動中] 正在載入翻譯模組與模型，請稍候...
+echo 載入完成後，系統會自動在你的瀏覽器開啟網頁！
 echo.
-echo   http://localhost:7860
-echo.
-echo 注意：關閉此視窗會停止服務。
+echo 注意：使用期間請勿關閉這個黑色視窗，關閉即代表停止服務。
 echo ========================================================
 echo.
 
 set PYTHON_EXE=%~dp0build\runtime\python.exe
-set SITE_PKG=%~dp0build\site-packages
+set SCRIPT=%~dp0run_gui.py
 
-rem 等2秒後自動開啟瀏覽器
-start "" timeout /t 3 /nobreak >nul
-start "" "http://localhost:7860"
+"%PYTHON_EXE%" "%SCRIPT%"
 
-"%PYTHON_EXE%" -c "import sys, site; site.addsitedir('%SITE_PKG:\=/%'); from pdf2zh.gui import demo; demo.launch(inbrowser=False, server_port=7860)"
+pause
