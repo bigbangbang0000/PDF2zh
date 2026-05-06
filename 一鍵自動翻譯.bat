@@ -1,12 +1,12 @@
 @echo off
 chcp 65001 > nul
-set PYTHONIOENCODING=utf-8
-TITLE 一鍵自動翻譯 PDF 工具
+TITLE 一鍵自動翻譯 PDF
 
 cd /d "%~dp0"
 
 echo ========================================================
 echo               PDF 一鍵自動翻譯工具
+echo     目標語言: 繁體中文 ^| 翻譯引擎: Google (免費)
 echo ========================================================
 echo.
 
@@ -18,11 +18,10 @@ for %%A in ("input\*.pdf") do set /a count+=1
 
 if %count%==0 (
     echo [提示] 尚未偵測到需要翻譯的 PDF 檔案！
-    echo 系統即將自動開啟「input」資料夾。
-    echo 請將你要翻譯的 PDF 檔案放入該資料夾中。
+    echo 系統正在為您開啟「input」資料夾...
+    echo 請將要翻譯的 PDF 放入後，關閉視窗並按任意鍵繼續。
     echo.
-    start "" "input"
-    echo 請在放入檔案後，按任意鍵繼續...
+    start "" "%~dp0input"
     pause
 )
 
@@ -31,35 +30,22 @@ for %%A in ("input\*.pdf") do set /a count+=1
 if %count%==0 (
     echo [錯誤] 仍然沒有偵測到 PDF 檔案，程式即將退出。
     pause
-    exit /b
+    exit /b 1
 )
 
-echo.
-echo [進度] 偵測到 %count% 個 PDF 檔案，開始自動翻譯...
+echo [進度] 偵測到 %count% 個 PDF 檔案，準備開始...
 echo.
 
-rem 設定路徑以使用內建環境或全域環境
-set PYTHONPATH=%~dp0;%~dp0build\site-packages
 set PYTHON_EXE=%~dp0build\runtime\python.exe
-set PDF2ZH_EXE=%~dp0build\pdf2zh.exe
+set SCRIPT=%~dp0auto_translate.py
+set INPUT_DIR=%~dp0input
+set OUTPUT_DIR=%~dp0output
 
-for %%f in ("input\*.pdf") do (
-    echo --------------------------------------------------------
-    echo 正在處理: %%~nxf
-    if exist "%PDF2ZH_EXE%" (
-        "%PDF2ZH_EXE%" "%%f" --output "output" --service google --lang-out zh-tw --ignore-cache
-    ) else if exist "%PYTHON_EXE%" (
-        "%PYTHON_EXE%" -m pdf2zh "%%f" --output "output" --service google --lang-out zh-tw --ignore-cache
-    ) else (
-        python -m pdf2zh "%%f" --output "output" --service google --lang-out zh-tw --ignore-cache
-    )
-    echo 處理完成: %%~nxf
-)
+"%PYTHON_EXE%" "%SCRIPT%" "%INPUT_DIR%" "%OUTPUT_DIR%"
 
-echo --------------------------------------------------------
 echo.
-echo [完成] 所有檔案翻譯完畢！
-echo 系統即將自動為您開啟「output」資料夾以取得翻譯結果...
-start "" "output"
-
+echo ========================================================
+echo 翻譯完畢！正在為您開啟結果資料夾...
+echo ========================================================
+start "" "%OUTPUT_DIR%"
 pause
