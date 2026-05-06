@@ -1,13 +1,13 @@
 # PDF2zh - PDFMathTranslate
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jimmymochi/PDF2zh/translate_pdf.yml?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bigbangbang0000/PDF2zh/translate_pdf.yml?style=flat-square)
 ![Python Version](https://img.shields.io/badge/python-3.10+-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![GitHub Pages](https://img.shields.io/badge/pages-live-success?style=flat-square)
 
 **PDF2zh** 是一個基於 **PDFMathTranslate** 的自動化 PDF 翻譯系統，支援利用 GitHub Actions 自動將 PDF 檔案翻譯為中文，並在 GitHub Pages 上發布翻譯結果。
 
-📖 [完整文檔](./WORKFLOW_README.md) | 🚀 [GitHub Pages](https://jimmymochi.github.io/PDF2zh/) | 📦 [PDFMathTranslate](https://github.com/Byaidu/PDFMathTranslate)
+📖 [完整文檔](./WORKFLOW_README.md) | 🚀 [GitHub Pages](https://bigbangbang0000.github.io/PDF2zh/) | 📦 [PDFMathTranslate](https://github.com/Byaidu/PDFMathTranslate)
 
 ---
 
@@ -51,14 +51,30 @@ pdf2zh --version
 #### 從源代碼安裝：
 
 ```bash
-git clone https://github.com/jimmymochi/PDF2zh.git
+git clone https://github.com/bigbangbang0000/PDF2zh.git
 cd PDF2zh
 pip install -e .
 ```
 
 ### 2. 本地使用
 
-#### 🌟 **推薦方式：互動式翻譯工具**
+#### 🌟 **極簡無腦翻譯方式（強烈推薦 Windows 用戶）**
+
+最輕鬆的翻譯方式，完全不需要輸入指令，也不需要找資料夾！提供兩種超簡單的方法：
+
+**方法 1️⃣：拖曳即翻譯**
+1. 直接把你想翻譯的 PDF 檔案，用滑鼠拖曳到 `拖曳PDF到此翻譯.bat` 這個檔案上面放開。
+2. 程式會自動在背景翻譯，完成後會**自動為你打開**包含翻譯結果的資料夾！
+
+**方法 2️⃣：一鍵自動翻譯**
+1. 雙擊執行 `一鍵自動翻譯.bat`。
+2. 程式會自動打開一個 `input` 資料夾，請把所有要翻譯的 PDF 檔案丟進去。
+3. 丟好後在黑色視窗按任意鍵，程式就會幫你全部翻譯好。
+4. 完成後會**自動為你打開**包含翻譯結果的資料夾！
+
+---
+
+#### 🛠️ **進階方式：互動式翻譯工具**
 
 最簡單的方式！工具會自動掃描 `input/` 資料夾，讓你選擇要翻譯的 PDF。
 
@@ -221,7 +237,7 @@ pdf2zh paper.pdf -o output/ -e google -v
 
 ```bash
 # 克隆倉庫
-git clone https://github.com/jimmymochi/PDF2zh.git
+git clone https://github.com/bigbangbang0000/PDF2zh.git
 cd PDF2zh
 
 # 將待翻譯的 PDF 複製到 input 資料夾
@@ -268,7 +284,7 @@ GitHub Actions 將自動：
 - 查看詳細日誌（如有錯誤）
 
 ```
-https://github.com/jimmymochi/PDF2zh/actions
+https://github.com/bigbangbang0000/PDF2zh/actions
 ```
 
 #### Step 5: 下載翻譯結果
@@ -276,7 +292,7 @@ https://github.com/jimmymochi/PDF2zh/actions
 翻譯完成後，訪問 GitHub Pages：
 
 ```
-https://jimmymochi.github.io/PDF2zh/
+https://bigbangbang0000.github.io/PDF2zh/
 ```
 
 頁面將顯示：
@@ -474,7 +490,7 @@ python translate_interactive.py
 
 #### 問題 6: GitHub Pages 頁面未更新
 
-**症狀**: https://jimmymochi.github.io/PDF2zh/ 未顯示最新檔案
+**症狀**: https://bigbangbang0000.github.io/PDF2zh/ 未顯示最新檔案
 
 **解決方案**:
 1. 確認 `gh-pages` 分支已創建：
@@ -596,7 +612,7 @@ pandoc temp/translated.pdf -o output.epub
 # 在工作流中添加通知步驟
 - name: Send Notification
   run: |
-    echo "翻譯完成！訪問 https://jimmymochi.github.io/PDF2zh/"
+    echo "翻譯完成！訪問 https://bigbangbang0000.github.io/PDF2zh/"
 ```
 
 ---
@@ -689,9 +705,9 @@ for pdf_file in glob.glob("input/*.pdf"):
 
 ## 📞 聯繫方式
 
-- 🐛 **提交 Bug**: [GitHub Issues](https://github.com/jimmymochi/PDF2zh/issues)
-- 💬 **功能建議**: [Discussions](https://github.com/jimmymochi/PDF2zh/discussions)
-- 📧 **Email**: jimmymochi@example.com
+- 🐛 **提交 Bug**: [GitHub Issues](https://github.com/bigbangbang0000/PDF2zh/issues)
+- 💬 **功能建議**: [Discussions](https://github.com/bigbangbang0000/PDF2zh/discussions)
+- 📧 **Email**: bigbangbang0000@example.com
 
 ---
 
