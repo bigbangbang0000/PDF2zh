@@ -56,7 +56,7 @@ def _pdf_items_html(pdf_files):
             size_str = f"{size_bytes / 1024:.1f} KB"
         else:
             size_str = f"{size_bytes / (1024 * 1024):.1f} MB"
-        mtime = datetime.fromtimestamp(pdf_file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
+        mtime = datetime.fromtimestamp(pdf_file.stat().st_mtime, tz=timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
         items.append(f"""
         <div class="pdf-card">
             <div class="pdf-icon">📕</div>
@@ -676,7 +676,7 @@ def generate_index():
     index_path = output_dir / 'index.html'
     index_path.write_text(html, encoding='utf-8')
 
-    print(f"✅ 已生成 index.html - 包含 {file_count} 個 PDF 檔案 (owner={owner}, repo={repo})")
+    print(f"✅ 已生成 index.html - 包含 {file_count} 個 PDF 檔案 (owner={repr(owner)}, repo={repr(repo)})")
     if pdf_files:
         print("\n📋 包含的檔案:")
         for f in pdf_files:
